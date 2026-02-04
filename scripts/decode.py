@@ -60,7 +60,7 @@ if __name__ == "__main__":
             raw_string = decode_csv_string(line)
             if raw_string is None:
                 continue
-            m = decoded_message = decode_message(raw_string)
+            decoded_message = decode_message(raw_string)
             if decoded_message:
                 print_measurement_if_valid(decoded_message, raw_string.date)
 
