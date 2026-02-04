@@ -1,7 +1,7 @@
-# Decodes Mieo HA102 power meter packets
+# Decode Mieo HA102 power meter packets
 
 ## Overview
-Initial reverse engineering of `Mieo HA102` power meter RF protocol. Not all fields were decoded, but the important ones are there.
+Reverse engineering of `Mieo HA102` power meter RF protocol. Not all fields were decoded, but the important ones are there.
 
 ## Signal characteristics 
 * Frequency: 433.9 MHz
@@ -16,7 +16,7 @@ A few recorded signals can be found in `samples` folder.
 
 
 ## Format description
-Packets are sent at 433.9Mhz in bursts up to 10 equal messages in each burst.
+Packets are sent at 433.9Mhz in bursts, up to 10 equal messages in each burst.
 All values seem to be Big-Endian encoded.
 
 * Transmitter - the meter itself, connected to power lines
@@ -27,7 +27,7 @@ All values seem to be Big-Endian encoded.
 | 0  | 0x55555...          | up to 8 bytes | Preamble                                                                                                                                 |
 | 1  | 0x3475              | 2 bytes       | Sync word                                                                                                                                |
 | 2  | Device ID ?         | 2 bytes       | Was constant on my device (0xc58c)                                                                                                       |
-| 3  | Sender ID ?         | 2 bytes       | Was 0000 for transmitter, <br/>FFFF for receiver in 'Search' mode                                                                        |
+| 3  | Sender ID ?         | 2 bytes       | Was 0000 for transmitter, FFFF for receiver in 'Search' mode                                                                             |
 | 4  | Device Type         | 1 byte        | Was 0x80 for transmitter's packets, 0x10 in Receiver's packets                                                                           |
 | 5  | Length ?            | 1 byte        | Observed value was always 0x0d, matching itself + 12 bytes following this field (including CRC). No other packet lengths observed so far |
 | 6  | Unknown             | 1 byte        | Unknown, could be part of total consumption counter                                                                                      |
@@ -40,11 +40,12 @@ All values seem to be Big-Endian encoded.
 | 13 | Unknown             | 1 byte        | Unknown                                                                                                                                  |
  
 * Transmitter does not know the voltage, only current. Display unit calculates power using a user-entered voltage value
-* No per-phase or per-clamp information is transmitted; all values are aggregate current.
-* Transmitter sends messages about once in minute when in normal mode, and about once every few seconds when in search mode. 
+* No per-phase or per-clamp information is transmitted; all values are aggregate current
+* Transmitter sends messages about once in a minute when in normal mode, and about once every 6 seconds when in search mode 
 * When display is in search mode: 
-  * Sender ID is set to FFFF 
-  * Display does not send "low battery" flag even if its batteries are low
+  * Sender ID is set to FFFF
+  * total and current consumption are always zero
+  * battery status is always 0x00 even if its batteries are low
 
 * Often the preamble is shifted one bit left or right, so if its AAAAA is worth trying to shift it and check if sync word matches
 * When current consumption is zero, long runs of identical bits can cause occasional bit misalignment during demodulation. In such cases CRC verification may succeed only after a ±1 bit shift. This is likely a receiver/clock recovery issue, not intentional protocol behavior.
