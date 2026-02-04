@@ -45,7 +45,7 @@ All values seem to be Big-Endian encoded.
 * When display is in search mode: 
   * Sender ID is set to FFFF
   * total and current consumption are always zero
-  * battery status is always 00 even if its batteries are low
+  * battery status is always 0x00 even if its batteries are low
 
 * Often the preamble is shifted one bit left or right, so if its AAAAA is worth trying to shift it and check if sync word matches
 * When current consumption is zero, long runs of identical bits can cause occasional bit misalignment during demodulation. In such cases CRC verification may succeed only after a ±1 bit shift. This is likely a receiver/clock recovery issue, not intentional protocol behavior.
