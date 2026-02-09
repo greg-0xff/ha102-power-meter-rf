@@ -127,7 +127,7 @@ class TestMessageCRC:
         
     def test_valid_crc_search_mode_packet(self, search_mode_packet):
         msg = Message.from_str(search_mode_packet)
-        assert msg.crc_result in [True, -1, 1]
+        assert msg.crc_result == -1
         
     def test_invalid_crc_corrupted_crc_field(self, corrupted_crc_packet):
         msg = Message.from_str(corrupted_crc_packet)
@@ -137,21 +137,13 @@ class TestMessageCRC:
         msg = Message.from_str(corrupted_data_packet)
         assert msg.crc_result is False
         
-    def test_crc_left_shift_detection(self):
-        packet = "5555553475c58c0000800d000027b10000008e01000e240"
-        msg = Message.from_str(packet)
-        if msg and msg.crc_result == -1:
-            assert msg.crc_result == -1
-        else:
-            assert True
+    def test_crc_left_shift_detection(self, crc_left_shift_packet):
+        msg = Message.from_str(crc_left_shift_packet)
+        assert msg.crc_result == -1
             
-    def test_crc_right_shift_detection(self):
-        packet = "5555553475c58c0000800d000027b10000008e01000e240"
-        msg = Message.from_str(packet)
-        if msg and msg.crc_result == 1:
-            assert msg.crc_result == 1
-        else:
-            assert True
+    def test_crc_right_shift_detection(self, crc_right_shift_packet):
+        msg = Message.from_str(crc_right_shift_packet)
+        assert msg.crc_result == 1
             
     def test_calc_crc_returns_integer(self):
         hex_string = "0000800d000027b10000008e0100"

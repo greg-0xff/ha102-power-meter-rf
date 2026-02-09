@@ -64,3 +64,13 @@ def max_current_a_packet():
 @pytest.fixture
 def zero_values_packet():
     return "5555553475c58c0000800d000000000000000000006fd80"
+
+
+@pytest.fixture
+def crc_left_shift_packet():
+    return "5555553475c58c0000800d000027b10000008e010007120"
+
+
+@pytest.fixture
+def crc_right_shift_packet():
+    return "5555553475c58c0000800d000027b10000008e01001c480"
