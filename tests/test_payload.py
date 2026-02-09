@@ -108,11 +108,8 @@ class TestMessageFromStr:
         assert msg is not None
         
     def test_too_short_message_handling(self, too_short_packet):
-        try:
-            msg = Message.from_str(too_short_packet)
-            assert msg is None or msg.crc is None or len(msg.crc) < 4
-        except (IndexError, ValueError):
-            pass
+        with pytest.raises((ValueError, IndexError)):
+            Message.from_str(too_short_packet)
             
     def test_empty_string_handling(self, empty_packet):
         msg = Message.from_str(empty_packet)
